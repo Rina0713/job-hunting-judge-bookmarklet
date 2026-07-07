@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>求人一括ジャッジ・ブックマークレット導入ページ</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 40px 20px; background: #f8fafc; }
+        .card { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        h1 { color: #1e293b; font-size: 24px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        h2 { color: #0f172a; font-size: 18px; margin-top: 20px; }
+        p { color: #475569; }
+        /* ブックマークレットボタンのスタイル */
+        .bookmarklet-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: #ffffff !important;
+            font-weight: bold;
+            padding: 14px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            transition: all 0.2s ease;
+            cursor: move; /* 掴んで動かせるマーク */
+            font-size: 16px;
+            margin: 20px 0;
+        }
+        .bookmarklet-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+        .notice { background: #fffbeb; border-left: 4px solid #d97706; padding: 15px; color: #b45309; border-radius: 4px; font-size: 14px; margin-top: 15px; }
+        ol { padding-left: 20px; color: #475569; }
+        li { margin-bottom: 10px; }
+        code { background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>🔍 求人情報一括抽出・多段階自動判定ブックマークレット</h1>
+        <p>人材紹介業務における求人選定プロセスを効率化するために開発した、ブラウザ用スクリプトです。</p>
+        
+        <h2>🚀 登録方法（カンマ1秒で完了）</h2>
+        <p>下の青いボタンをマウスで掴んで、あなたのブラウザの<strong>「ブックマークバー（お気に入りバー）」までドラッグ＆ドロップ</strong>して離してください。</p>
+        
+        <div style="text-align: center;">
+            <a class="bookmarklet-btn" href="javascript:(async function(){const rows=document.querySelectorAll('table.resultTable tbody tr[height=&quot;30px&quot;]');if(rows.length===0){alert('求人一覧画面で実行してください。');return;}let keywordsInput=prompt('候補者の「希望職種・キーワード」をカンマ区切りで入力してください。\n(例: 保険, 企画, 営業)','保険, 企画');if(keywordsInput===null)return;let keywords=keywordsInput.split(/[,、]/).map(k=>k.trim()).filter(k=>k!=='');let noShift=confirm('【こだわり条件 1/2】\nシフト制・平日休みは「応募不可（完全カット）」にしますか？');let noTransfer=confirm('【こだわり条件 2/2】\n転勤ありの求人は「応募不可（完全カット）」にしますか？');const outputWindow=window.open('','_blank');outputWindow.document.write('%3Chtml%3E%3Chead%3E%3Ctitle%3E求人5段階判定レポート%3E/title%3E%3Cstyle%3Ebody{font-family:sans-serif;padding:20px;background:#f5f7fa;color:#333;}h1{font-size:18px;color:#2c3e50;border-left:5px solid #2ecc71;padding-left:10px;}table{width:100%;border-collapse:collapse;background:#fff;margin-top:20px;}th,td{padding:12px;text-align:left;border-bottom:1px solid #ddd;}th{background:#34495e;color:#fff;}.score{font-weight:bold;padding:3px 8px;border-radius:3px;color:#fff;}.s5{background:#e74c3c;}.s4{background:#e67e22;}.s3{background:#f1c40f;}.s2{background:#3498db;}.s1{background:#95a5a6;}.badge{padding:2px 6px;border-radius:3px;font-weight:bold;color:#fff;}.badge-maru{background:#2ecc71;}.badge-batsu{background:#e74c3c;}.badge-sankaku{background:#f1c40f;}.reason{font-size:11px;color:#7f8c8d;margin-top:4px;}.counter{background:#ebf8ff;border:1px solid #bee3f8;padding:15px;border-radius:5px;font-weight:bold;margin-bottom:20px;}%3E/style%3E%3C/head%3E%3Cbody%3E%3Ch1%3E🔍 求人5段階判定レポート%3E/h1%3E%3Cdiv class=&quot;counter&quot; id=&quot;counterBox&quot;%3E解析中... (完了: %3Cspan id=&quot;checkedCount&quot;%3E0%3E/span%3E / 全 ${rows.length} 件)%3E/div%3E%3Cdiv id=&quot;zeroMessage&quot; style=&quot;display:none;padding:20px;background:#fff;border:1px solid #ddd;text-align:center;font-weight:bold;&quot;%3E該当する求人が見つかりませんでした。%3E/div%3E%3Ctable id=&quot;resultTable&quot; style=&quot;display:none;&quot;%3E%3Cthead%3E%3Ctr%3E%3Cth%3EID%3E/th%3E%3Cth%3E企業名・求人名%3E/th%3E%3Cth%3Eマッチ度%3E/th%3E%3Cth%3E休日（シフト等）%3E/th%3E%3Cth%3E転勤%3E/th%3E%3E/tr%3E%3E/thead%3E%3Ctbody id=&quot;tableBody&quot;%3E%3E/tbody%3E%3E/table%3E');const counterBox=outputWindow.document.getElementById('counterBox');const checkedSpan=outputWindow.document.getElementById('checkedCount');const resultTable=outputWindow.document.getElementById('resultTable');const tableBody=outputWindow.document.getElementById('tableBody');const zeroMessage=outputWindow.document.getElementById('zeroMessage');let processedCount=0;let validMatchCount=0;for(let i=0;i%3Crows.length;i++){const row=rows[i];const linkEl=row.querySelector('a[href*=&quot;detail&quot;]');if(!linkEl){processedCount++;checkedSpan.innerText=processedCount;continue;}const detailUrl=linkEl.href;const idEl=row.querySelector('.jobId')||row.querySelector('td');const id=idEl?idEl.innerText.trim():'---';const titleEl=row.querySelector('.jobTitle')||linkEl;const fullTitle=titleEl.innerText.trim();let companyName=fullTitle;let positionName='';if(fullTitle.includes('】')){const parts=fullTitle.split('】');companyName=parts[0].replace('【','')||'';positionName=parts[1]||'';}await new Promise(resolve=>setTimeout(resolve,50));try{const res=await fetch(detailUrl);const htmlText=await res.text();const parser=new DOMParser();const doc=parser.parseFromString(htmlText,'text/html');const pageText=doc.body.innerText;let holidayText='';const ths=doc.querySelectorAll('th');ths.forEach(th=>{if(th.innerText.includes('休日')||th.innerText.includes('勤務時間')){if(th.nextElementSibling){holidayText+=th.nextElementSibling.innerText;}}});let matchCount=0;keywords.forEach(k=>{if(pageText.includes(k))matchCount++;});let score=1;if(matchCount===0)score=1;else if(matchCount===1)score=2;else if(matchCount===2)score=3;else if(matchCount===3)score=4;else score=5;let holidayEval={status:'%3Cspan class=&quot;badge badge-maru&quot;%3E〇%3E/span%3E',note:'完全週休2日制（土日祝）'};if(holidayText.match(/(シフト|交代|交替|変形労働|月[0-9]日休み|土曜出社)/)){if(noShift){processedCount++;checkedSpan.innerText=processedCount;continue;}holidayEval={status:'%3Cspan class=&quot;badge badge-batsu&quot;%3E×%3E/span%3E',note:'シフト制・変形労働・または土曜出社あり（自動足切り対象）'};}else if(holidayText.includes('社内カレンダー')){holidayEval={status:'%3Cspan class=&quot;badge badge-sankaku&quot;%3E△%3E/span%3E',note:'基本土日祝（社内カレンダーによる変動あり）'};}let transferEval={status:'%3Cspan class=&quot;badge badge-maru&quot;%3E〇%3E/span%3E',note:'転勤なし'};if(pageText.match(/(転勤あり|当面なし|転勤は当面想定していません)/)){if(pageText.includes('転勤あり')){if(noTransfer){processedCount++;checkedSpan.innerText=processedCount;continue;}transferEval={status:'%3Cspan class=&quot;badge badge-batsu&quot;%3E×%3E/span%3E',note:'転勤あり（自動足切り対象）'};}else{transferEval={status:'%3Cspan class=&quot;badge badge-sankaku&quot;%3E△%3E/span%3E',note:'当面なし、または変更範囲規定あり'};}}validMatchCount++;if(validMatchCount===1){resultTable.style.display='table';}const newRow=tableBody.insertRow();newRow.innerHTML=`%3Ctd%3E${id}%3E/td%3E%3Ctd%3E%3Cstrong%3E${companyName}%3E/strong%3E%3Cbr%3E%3Cspan style=&quot;color:#555;font-size:12px;&quot;%3E${positionName}%3E/span%3E%3E/td%3E%3Ctd%3E%3Cspan class=&quot;score s${score}&quot;%3E${score}%3E/span%3E%3Cdiv class=&quot;reason&quot;%3Eヒットキーワード: ${matchCount}個%3E/div%3E%3E/td%3E%3Ctd%3E${holidayEval.status}%3Cdiv class=&quot;reason&quot;%3E${holidayEval.note}%3E/div%3E%3E/td%3E%3Ctd%3E${transferEval.status}%3Cdiv class=&quot;reason&quot;%3E${transferEval.note}%3E/div%3E%3E/td%3E`;}catch(e){console.error(id,e);}finally{processedCount++;checkedSpan.innerText=processedCount;if(processedCount===rows.length){counterBox.style.background='#c6f6d5';counterBox.innerText=`解析完了！ 全 ${rows.length} 件の精査が終わりました。（提案可能：${validMatchCount} 件）`;if(validMatchCount===0){zeroMessage.style.display='block';resultTable.style.display='none';}}}}}();">求人ジャッジくん</a>
+        </div>
+
+        <div class="notice">
+            ※ ブラウザの「表示」メニューなどから「ブックマークバー（お気に入りバー）」を表示させた状態でドラッグしてください。
+        </div>
+
+        <h2>🛠️ 使い方</h2>
+        <ol>
+            <li>求人サイトの「求人一覧画面」を開きます。</li>
+            <li>お気に入りバーに登録した上記の<code>求人ジャッジくん</code>をクリックします。</li>
+            <li>画面の指示に従ってキーワードを入力し、こだわり条件を選択すると、高速で自動解析が始まり、別タブに美しい5段階評価レポートが出力されます。</li>
+        </ol>
+    </div>
+
+</body>
+</html>
